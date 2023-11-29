@@ -1,0 +1,44 @@
+name: Lab 3
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy to
+        type: environment
+        required: true
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo 'building'
+
+  Dev-job:
+    runs-on: ubuntu-latest
+    if: github.event.name == 'workflow_dispatch'
+    needs: Build
+    environment: DEV
+    steps:
+      - run: echo 'developing'
+
+  Test-job:
+    runs-on: ubuntu-latest
+    if: github.event.name == 'workflow_dispatch'
+    needs: Build
+    environment: TEST
+    steps:
+      - run: echo 'testing'
+
+  Prod-job:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'PROD'
+    needs: Build
+    environment: TEST
+    steps:
+      - run: echo 'production'
+  
+
+  
+      
